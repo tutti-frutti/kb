@@ -1,0 +1,85 @@
+.header {
+    position: relative;
+    padding: 15px 0 150px;
+    max-height: 710px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    &._overlay {
+        &::before {
+            position: absolute;
+            content: '';
+            height: 100%;
+            left: 0;
+            right: 0;
+            top: 0;
+            background: rgba(0, 0, 0, .5);
+        }
+    }
+    &__top {
+        margin-bottom: 150px;
+    }
+    &__logo,
+    &__logo-descr {
+        .dib(middle);
+        a {
+            .dib(middle);
+            font-size: 45px;
+            line-height: 14px;
+            text-transform: uppercase;
+            color: #fff;
+            &:hover,
+            &:focus {
+                text-decoration: none;
+            }
+        }
+        span {
+            display: block;
+            color: #fff;
+        }
+    }
+    &__tel {
+        text-align: right;
+        color: #fff;
+    }
+    &__phones,
+    &__order {
+        .dib(middle);
+        span {
+            display: block;
+        }
+    }
+    &__order {
+        margin-left: 15px;
+    }
+    &__text {
+        color: #fff;
+        h1 {
+            margin-bottom: 10px;
+            font-size: 50px;
+            text-transform: uppercase;
+        }
+        h2 {
+            &:last-of-type {
+                position: relative;
+                padding-bottom: 20px;
+                margin-bottom: 20px;
+                &::before {
+                    position: absolute;
+                    content: '';
+                    left: 0;
+                    top: 50px;
+                    width: 80px;
+                    height: 2px;
+                    background: @elems;
+                }
+            }
+        }
+        p {
+            padding-right: 80px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            line-height: 22px;
+        }
+    }
+}
