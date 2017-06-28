@@ -44,16 +44,22 @@ var container = document.querySelector('.hotels-list');
 // была ошибка в том, что переменная hotels была не определена. дело в том, что hotels.js находился ниже, чем файл, который его вызывал.
 hotels.forEach(function(hotel){
     var element = getElementFromTemplate(hotel);
-    console.log(element);
-    console.log(hotel);
+//    console.log(getElementFromTemplate);
+//    console.log(element);
+//    console.log(hotel);
     container.appendChild(element);
 });
 
 // 2. для каждого элемента создать DOM-элемент на основе шаблона
 /**
-*@param {Object} data
-*@return {Element} data
+*@param {Object} data - на вход Ф. принимает объект, представляет собой объект описывающий данные об отеле (которые находятся в hotels.js)
+*@return {Element} data - возвращает новый тег article
 */
+
+// вопросы:
+// почему говорится о том, что Ф. getElementFromTemplate мы запускаем Внутри js-цикла (.forEach?), если сама Ф. находится За пределам (за скобками) .forEach?
+// как параметр data видит объекты в hotels.js?
+// почему в .forEach объект называется hotel - это произвольное название? значения data подставляются автоматически?
 function getElementFromTemplate(data) {
     return document.createElement('article');
 }

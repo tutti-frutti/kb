@@ -31,7 +31,7 @@ var hotels = [
     
     {
         'amenities': ['breakfest'],
-        'distance': 3.8,
+        'distance': 5.8,
         'location': {
             'lat': 35.5971291676,
             'lng': 139.7117990255
