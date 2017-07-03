@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="css/main-kbook.css" media="screen" title="no title" charset="utf-8">
+  <link rel="stylesheet" href="css/main.css" media="screen" title="no title" charset="utf-8">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <!--  <script type="text/javascript" src="http://underscorejs.org/underscore-min.js"></script>-->
 <!--  <script type="text/javascript" src="http://backbonejs.org/backbone-min.js"></script>-->
@@ -61,8 +62,12 @@
 
   <form class="hotels-filters">
     <div role="button" id="sort-hotels-default" class="hotel-filter hotel-filter-dropdown hotel-filter-selected">Все</div>
-    <div role="button" id="sort-by-price-asc" class="hotel-filter hotel-filter-dropdown">Сначала дешевые</div>
     <div role="button" id="sort-by-price-desc" class="hotel-filter hotel-filter-dropdown">Сначала дорогие</div>
+    <div role="button" id="sort-by-price-asc" class="hotel-filter hotel-filter-dropdown">Сначала дешевые</div>
+    <div role="button" id="sort-by-price-asc" class="hotel-filter hotel-filter-dropdown">От 2х звезд</div>
+    <div role="button" id="sort-by-price-asc" class="hotel-filter hotel-filter-dropdown">Рейтинг не ниже 6</div>
+    <div role="button" id="sort-by-price-asc" class="hotel-filter hotel-filter-dropdown">До центра не более 1 км</div>
+    <div role="button" id="sort-by-price-asc" class="hotel-filter hotel-filter-dropdown">Только избранные</div>
   </form>
 
   <div class="hotels-list"></div>
@@ -97,6 +102,7 @@
 
 <script src="js/form-validation.js"></script>
 <script src="js/hotels.js"></script>
+<script src="js/ajax.js"></script>
 <script src="js/common.js"></script>
 </body>
 </html>

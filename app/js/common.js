@@ -34,6 +34,9 @@
         console.log(item, index, array);
     });
 
+    
+    // ВЫВОД СПИСКА ОТЕЛЕЙ НА СТРАНИЦУ
+    
     var container = document.querySelector('.hotels-list');
 
     // 1. перебрать все элементы в структуре данных.
@@ -70,6 +73,8 @@
         element.querySelector('.hotel-name').textContent = data.name;
         element.querySelector('.hotel-rating').textContent = data.rating;
         element.querySelector('.hotel-price-value').textContent = data.price;
+        element.querySelector('.hotel-distance-kilometers').textContent = data.distance;
+        element.querySelector('.hotel-stars').textContent = data.stars;
 
         // РАБОТА С ИЗБР
         // изображения отличаются от обычных DOM-элементов тем, что после задания src они загружаются с сервера.
