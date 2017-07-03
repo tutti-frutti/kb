@@ -11,7 +11,7 @@ var hotels = [
         'price': 3200,
         'rating': 7.4,
         'stars': 3,
-        'preview': 'aaa'
+        'preview': 'img/hotel-1.jpg'
     },
     
     {
@@ -26,7 +26,7 @@ var hotels = [
         'price': 3200,
         'rating': 8.2,
         'stars': 4,
-        'preview': 'www'
+        'preview': 'img/hotel-2.jpg'
     },
     
     {
@@ -41,6 +41,6 @@ var hotels = [
         'price': 5700,
         'rating': 8.9,
         'stars': 5,
-        'preview': 'aaa'
+        'preview': ''
     },
 ]
