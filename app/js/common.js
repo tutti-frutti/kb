@@ -34,9 +34,9 @@
         console.log(item, index, array);
     });
 
-    
+
     // ВЫВОД СПИСКА ОТЕЛЕЙ НА СТРАНИЦУ
-    
+
     var container = document.querySelector('.hotels-list');
 
     // 1. перебрать все элементы в структуре данных.
@@ -46,10 +46,44 @@
     // на вход Ф. принимает объект (data), который представляет собой объект описывающий данные для отеля
     // данные находятся в hotel.js
     // была ошибка в том, что переменная hotels была не определена. дело в том, что hotels.js находился ниже, чем файл, который его вызывал.
-    hotels.forEach(function (hotel) {
-        var element = getElementFromTemplate(hotel);
-        container.appendChild(element);
-    });
+
+
+    // ЗАГРУЗКА СПИСКА ОТЕЛЕЙ ПО AJAX ИЗ DATA.JSON
+    // создаём Ф. для загрузки данных с сервера
+    // 1. создаём xhr запрос
+    // 2. открываем и формируем запрос
+    // 3. устанавливаем обработчик для действий после загрузки даннных
+    // 4. отправляем данные
+
+    // поскольку переменной hotels больше нет, а список отелей каждый раз разный, нужно сделать еще одну Ф. котрая принимает на вход список отелей и уже потом их отрисовывает
+    // для этого forEach вкладываем во внутрь этой Ф. единственным параметром делаем список hotels, который в последствии нужно отрисовать
+    // теперь передавая разные списки можно будет их по разному отрисовывать
+    // единственным параметром Ф. renderHotels является массив объектов
+
+    getHotels(); // вызов Ф. getHotels();
+    
+    // отрисовка списка отелей
+    function renderHotels(hotels) {
+        hotels.forEach(function (hotel) {
+            var element = getElementFromTemplate(hotel);
+            container.appendChild(element);
+        });
+    }
+
+    // загрузка списка отелей
+    function getHotels() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'data/hotels.json')
+        xhr.onload = function (evt) {
+            var rawData = evt.target.response; // получаем данные
+            var loadedHotels = JSON.parse(rawData); // форматируем к виду настоящих объектов
+
+            // тут далее обработка загруженных данных (например отрисовка)
+            // после того как мы загрузили список отелей остаётся только вызвать Ф. отрисовки отелей на странице
+            renderHotels(loadedHotels);
+        };
+        xhr.send();
+    }
 
     // 2. для каждого элемента создать DOM-элемент на основе шаблона
     /**
@@ -172,17 +206,17 @@
 
 // (function() {})(); - создаём Ф. в операторах скобки() во внутрь ложим содержимое и затем эта Ф. сама себя вызывает '()'
 
-var arr = ['Есть','жизнь','на','Марсе'];
+var arr = ['Есть', 'жизнь', 'на', 'Марсе'];
 
 var arrLenght = [];
 
-arrLenght = arr.map(function(item){
+arrLenght = arr.map(function (item) {
     return item.length;
 })
 
 console.log(arrLenght)
 
-var numbs = [1,2,3,4,5];
+var numbs = [1, 2, 3, 4, 5];
 
 //var getSum = function(sum) {
 //    var sum = numbs.reduce(function (prev, item){
@@ -191,16 +225,16 @@ var numbs = [1,2,3,4,5];
 //}
 
 function getSums(arr) {
-  var result = [];
-  if (!arr.length) return result;
+    var result = [];
+    if (!arr.length) return result;
 
-  var totalSum = arr.reduce(function(sum, item) {
-    result.push(sum);
-    return sum + item;
-  });
-  result.push(totalSum);
+    var totalSum = arr.reduce(function (sum, item) {
+        result.push(sum);
+        return sum + item;
+    });
+    result.push(totalSum);
 
-  return result;
+    return result;
 }
 
-console.log(getSums([1,2,3,4,5]))
+console.log(getSums([1, 2, 3, 4, 5]))
