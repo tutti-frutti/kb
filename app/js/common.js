@@ -1,43 +1,22 @@
 (function () {
-    var formElement = document.forms['searchform'];
-
-    var guests = formElement['searchform-guests-number'];
-    var rooms = formElement['searchform-guests-rooms'];
-
-    guests.min = 1;
-    guests.max = 6;
-
-    var MAX_GUESTS_PER_ROOM = 3;
-
-    function setMinAndMaxRooms(roomsElement, guestsNumber) {
-        roomsElement.min = Math.ceil(guestsNumber / MAX_GUESTS_PER_ROOM);
-        roomsElement.max = guestsNumber;
-    }
-    guests.value = 2;
-    setMinAndMaxRooms(rooms, guests.value);
-    rooms.value = rooms.min;
-
-    guests.onchange = function () {
-        setMinAndMaxRooms(rooms, guests.value);
-    };
-
-    formElement.onsubmit = function (evt) {
-        evt.preventDefault();
-
-        document.cookie = 'guests=' + guests.value;
-        document.cookie = 'rooms=' + rooms.value;
-    }
-
-    var arr = [1, 2, 3];
-
-    arr.forEach(function (item, index, array) {
-        console.log(item, index, array);
-    });
-
 
     // ВЫВОД СПИСКА ОТЕЛЕЙ НА СТРАНИЦУ
-
+    // выбор контейнера для отрисовки отелей на странице
     var container = document.querySelector('.hotels-list');
+    // дополнительные 2 переменные, которые добавили на стадии написания фильтрации и сортировки
+    var activeFilter = 'filter-all'; // id фильтра по умолчанию, т.е. тот самый фильтр, который применяется сразу же
+//    var hotels = []; // позже поймем зачем нужна эта переменная
+
+    // СОРТИРОВКА И ФИЛЬТРАЦИЯ
+    // сначала нужно повесить обработчики на кнопки которые переключают фильтры
+    // делается это через цикл for - таким образом перебираем все кнопки и вешаем событие onclick на каждую из них
+    var filters = document.querySelectorAll('.hotel-filter');
+    for (var i = 0; i < filters.length; i++) {
+        filters[i].onclick = function (evt) {
+            var clickedElementID = evt.target.id; // получаем id элемента по которому кликнули
+            setActiveFilter(clickedElementID); // и после этого запускаем ф. setActiveFilter() которая и будет заниматься установлением нужных фильтров. объявление этой ф. ниже 
+        };
+    }
 
     // 1. перебрать все элементы в структуре данных.
     // перебрать данные нужно для того, чтобы создать для каждого элемента DOM-элемент на основе шаблона. 
@@ -61,14 +40,62 @@
     // единственным параметром Ф. renderHotels является массив объектов
 
     getHotels(); // вызов Ф. getHotels();
-    
+
     // отрисовка списка отелей
     function renderHotels(hotels) {
+        container.innerHTML = '';
+
         hotels.forEach(function (hotel) {
             var element = getElementFromTemplate(hotel);
             container.appendChild(element);
+            console.log(element)
         });
     }
+
+    // объявление ф. установки фильтра
+    // @param {string} id
+    // ф. принимет на вход id в виде строки и это id той кнопки по которой был клик 
+    function setActiveFilter(id) {
+        if (activeFilter === id) { // данное выражение предотвращает повторные срабатывания ф. первоначально фильтра (all)
+            return;
+        }
+        // алгоритм работы фильтрации. происходит два последовательных действия
+        // 1. подстветить фильтр - реакция сайта на наше действие
+        // 2. отсортировать и отфильтровать отели по выбранному параметру и вывести его на страницу
+        document.querySelector('#' + activeFilter).classList.remove('hotel-filter-selected'); // сначала убираем предыдущий выбранный фильтр 
+        document.querySelector('#' + id).classList.add('hotel-filter-selected'); // добавляем класс той кнопке по которой кликнули
+
+        // отсортировать и отфильтровать отели по выбранному параметру и вывести на страницу
+        var filteredHotels = hotels.slice(0); // записываем в переменную filteredHotels Копию исходного массива
+        console.log(hotels);
+        // switch - это оператор множественного выбора. он нужен для множественных вариантов выбора
+        // if-else - как правило используется для двух вариантов выбора (или то, или другое)
+        // в скобки оператора if передаём то, что мы хотим проверить. в зависимости от значения чего у нас будет разный код
+        // перечисление условий производится с помощью слова case
+        console.log('test')
+        switch (id) { // оператор switch говорит о том, что мы перебираем id и в зависимости от того, какой id выполняем разный код
+            case 'filter-expensive' : // в случае если строка равна 'filter-expensive' , то выполняем код который стоит за ":" и этот код выполняется до ключевого слова "break"
+                // для показа сначала дорогих отелей, список нужно отсортировать по убыванию цены
+                // берем скопированный исходный массив и применяем к нему метод sort с переданной во внутрь ф. фильтрации
+                // в нашем случае объектами для сравнения будут 2 объекта и нужно указать, что цена одного выше цены другого 
+                console.log('test2')
+                    console.log(filteredHotels);
+                filteredHotels = filteredHotels.sort(function (a, b) {
+                    return b.price - a.price;
+                });
+                console.log(filteredHotels)
+                break;
+            case 'filter-2stars':
+
+                break;
+//            default: // вместо case и строки, когда нужно действие по дефолту
+                // code
+//                break;
+        }
+
+        renderHotels(filteredHotels);
+    }
+
 
     // загрузка списка отелей
     function getHotels() {
@@ -205,36 +232,3 @@
 // ex: (function(val) {console.log(val); }) ('Привет') - вызов Ф. и выведет в консоль Привет
 
 // (function() {})(); - создаём Ф. в операторах скобки() во внутрь ложим содержимое и затем эта Ф. сама себя вызывает '()'
-
-var arr = ['Есть', 'жизнь', 'на', 'Марсе'];
-
-var arrLenght = [];
-
-arrLenght = arr.map(function (item) {
-    return item.length;
-})
-
-console.log(arrLenght)
-
-var numbs = [1, 2, 3, 4, 5];
-
-//var getSum = function(sum) {
-//    var sum = numbs.reduce(function (prev, item){
-//        return prev + item;
-//    }, 0);
-//}
-
-function getSums(arr) {
-    var result = [];
-    if (!arr.length) return result;
-
-    var totalSum = arr.reduce(function (sum, item) {
-        result.push(sum);
-        return sum + item;
-    });
-    result.push(totalSum);
-
-    return result;
-}
-
-console.log(getSums([1, 2, 3, 4, 5]))
