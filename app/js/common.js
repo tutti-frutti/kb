@@ -5,7 +5,7 @@
     var container = document.querySelector('.hotels-list');
     // дополнительные 2 переменные, которые добавили на стадии написания фильтрации и сортировки
     var activeFilter = 'filter-all'; // id фильтра по умолчанию, т.е. тот самый фильтр, который применяется сразу же
-//    var hotels = []; // позже поймем зачем нужна эта переменная
+    var hotels = []; // позже поймем зачем нужна эта переменная
 
     // СОРТИРОВКА И ФИЛЬТРАЦИЯ
     // сначала нужно повесить обработчики на кнопки которые переключают фильтры
@@ -44,12 +44,15 @@
     // отрисовка списка отелей
     function renderHotels(hotels) {
         container.innerHTML = '';
+        
+        // создание фрагмента для оптимизации отрисовки
+        var fragment = document.createDocumentFragment();
 
         hotels.forEach(function (hotel) {
             var element = getElementFromTemplate(hotel);
-            container.appendChild(element);
-            console.log(element)
+            fragment.appendChild(element);
         });
+        container.appendChild(fragment);
     }
 
     // объявление ф. установки фильтра
@@ -67,30 +70,28 @@
 
         // отсортировать и отфильтровать отели по выбранному параметру и вывести на страницу
         var filteredHotels = hotels.slice(0); // записываем в переменную filteredHotels Копию исходного массива
-        console.log(hotels);
         // switch - это оператор множественного выбора. он нужен для множественных вариантов выбора
         // if-else - как правило используется для двух вариантов выбора (или то, или другое)
         // в скобки оператора if передаём то, что мы хотим проверить. в зависимости от значения чего у нас будет разный код
         // перечисление условий производится с помощью слова case
-        console.log('test')
         switch (id) { // оператор switch говорит о том, что мы перебираем id и в зависимости от того, какой id выполняем разный код
-            case 'filter-expensive' : // в случае если строка равна 'filter-expensive' , то выполняем код который стоит за ":" и этот код выполняется до ключевого слова "break"
-                // для показа сначала дорогих отелей, список нужно отсортировать по убыванию цены
-                // берем скопированный исходный массив и применяем к нему метод sort с переданной во внутрь ф. фильтрации
-                // в нашем случае объектами для сравнения будут 2 объекта и нужно указать, что цена одного выше цены другого 
-                console.log('test2')
-                    console.log(filteredHotels);
-                filteredHotels = filteredHotels.sort(function (a, b) {
-                    return b.price - a.price;
-                });
-                console.log(filteredHotels)
-                break;
-            case 'filter-2stars':
+        case 'filter-expensive': // в случае если строка равна 'filter-expensive' , то выполняем код который стоит за ":" и этот код выполняется до ключевого слова "break"
+            // для показа сначала дорогих отелей, список нужно отсортировать по убыванию цены
+            // берем скопированный исходный массив и применяем к нему метод sort с переданной во внутрь ф. фильтрации
+            // в нашем случае объектами для сравнения будут 2 объекта и нужно указать, что цена одного выше цены другого 
+            filteredHotels = filteredHotels.sort(function (a, b) {
+                return b.price - a.price;
+            });
+            break;
+        case 'filter-cheap':
+            filteredHotels = filteredHotels.sort(function (a, b) {
+                return a.price - b.price;
+            });
 
-                break;
-//            default: // вместо case и строки, когда нужно действие по дефолту
-                // code
-//                break;
+            break;
+            //            default: // вместо case и строки, когда нужно действие по дефолту
+            // code
+            //                break;
         }
 
         renderHotels(filteredHotels);
@@ -104,6 +105,8 @@
         xhr.onload = function (evt) {
             var rawData = evt.target.response; // получаем данные
             var loadedHotels = JSON.parse(rawData); // форматируем к виду настоящих объектов
+            // ВАЖНО: в переменную, которая используется для отрисовки списка отелей нужно обязательно ложить загруженное аяксом
+            hotels = loadedHotels;
 
             // тут далее обработка загруженных данных (например отрисовка)
             // после того как мы загрузили список отелей остаётся только вызвать Ф. отрисовки отелей на странице
