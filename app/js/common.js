@@ -25,9 +25,24 @@
     window.addEventListener('scroll', function(evt){
         // как определить, что скролл внизу страницы и пора показать следующую порцию отелей? 
         // как определить виден ли футер страницы? 
-        // 1. определить положение футера относительно экрана (вьюпорта) 
-        // 2. определить высоту экрана 
-        // 3. если смещение футера минус высота экрана меньше высоты футера, то футер виден хотя бы частично 
+        // 1. определить положение футера относительно экрана (вьюпорта)
+        // для этого подойдет метод Eltment.getBoundingClientRect();
+        // возвращает параметры элемента: положение каждой из Сторон относительно экрана и размеры. этот метод есть у каждого элемента страницы
+        // возвращает объект ClientRect, который содержит: 
+        var footerCoordinates = document.querySelector('footer').getBoundingClientRect();
+        console.log(footerCoordinates)
+        // 2. определить высоту экрана
+        // window.innerHeight - возвращает высоту вьюпорта
+        var viewportSize = window.innerHeight;
+        console.log(viewportSize)
+        // 3. если смещение футера минус высота экрана меньше высоты футера, то футер виден хотя бы частично
+        // расшифровка действий внутри скобок:
+        // footerCoordinates.bottom - смещение низа футера
+        // window.innerHeight - минус размер вьюпорта
+        // <= footerCoordinates.height - должно быть меньше или равно высоте футера
+        if(footerCoordinates.bottom - window.innerHeight <= footerCoordinates.height) {
+//            renderHotels(, ++currentPage);
+        }
     });
 
     // 1. перебрать все элементы в структуре данных.
