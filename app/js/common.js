@@ -6,6 +6,9 @@
     // дополнительные 2 переменные, которые добавили на стадии написания фильтрации и сортировки
     var activeFilter = 'filter-all'; // id фильтра по умолчанию, т.е. тот самый фильтр, который применяется сразу же
     var hotels = []; // позже поймем зачем нужна эта переменная
+    // переменные, которые добавляем на стадии написания подргрузки по скроллу
+    var currentPage = 0; // текущая страница
+    var PAGE_SIZE = 9; // не изменяемая величина
 
     // СОРТИРОВКА И ФИЛЬТРАЦИЯ
     // сначала нужно повесить обработчики на кнопки которые переключают фильтры
@@ -43,13 +46,17 @@
     getHotels(); // вызов Ф. getHotels();
 
     // отрисовка списка отелей
-    function renderHotels(hotels) {
+    function renderHotels(hotels, pageNumber) { // делаем ф. настраиваемой добавляя ей параметр pageNumber, кот буде говорить какую страницу из большого списка показывать (отрисовка по скроллу)
         container.innerHTML = '';
-
         // создание фрагмента для оптимизации отрисовки
         var fragment = document.createDocumentFragment();
 
-        hotels.forEach(function (hotel) {
+        // переменные в которых считается с какого элемента нужно вырезать и по какой
+        var from = pageNumber * PAGE_SIZE; // умножаем номер страницы на размер страницы. т.е. если нулевая страница, то возмется нулевой эл, если первая, то 9-й, если вторая то 18-й и т.д.
+        var to = from + PAGE_SIZE; // 
+        var pageHotels = hotels.slice(from, to);
+
+        pageHotels.forEach(function (hotel) {
             var element = getElementFromTemplate(hotel);
             fragment.appendChild(element);
         });
@@ -104,7 +111,7 @@
                 break;
         }
 
-        renderHotels(filteredHotels);
+        renderHotels(filteredHotels, 0);
     }
 
 

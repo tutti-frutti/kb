@@ -6,8 +6,6 @@ arrLenght = arr.map(function (item) {
     return item.length;
 })
 
-console.log(arrLenght)
-
 var numbs = [1, 2, 3, 4, 5];
 
 //var getSum = function(sum) {
@@ -28,5 +26,3 @@ function getSums(arr) {
 
     return result;
 }
-
-console.log(getSums([1, 2, 3, 4, 5]))
