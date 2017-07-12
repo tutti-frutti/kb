@@ -8,41 +8,54 @@
     var hotels = []; // позже поймем зачем нужна эта переменная
     // переменные, которые добавляем на стадии написания подргрузки по скроллу
     var currentPage = 0; // текущая страница
+    var filteredHotels = []; // сохраним отфильтрованный список глобально
     var PAGE_SIZE = 9; // не изменяемая величина
 
     // СОРТИРОВКА И ФИЛЬТРАЦИЯ
     // сначала нужно повесить обработчики на кнопки которые переключают фильтры
     // делается это через цикл for - таким образом перебираем все кнопки и вешаем событие onclick на каждую из них
-    var filters = document.querySelectorAll('.hotel-filter');
-    for (var i = 0; i < filters.length; i++) {
-        filters[i].onclick = function (evt) {
-            var clickedElementID = evt.target.id; // получаем id элемента по которому кликнули
-            setActiveFilter(clickedElementID); // и после этого запускаем ф. setActiveFilter() которая и будет заниматься установлением нужных фильтров. объявление этой ф. ниже
-        };
-    }
-    
+    var filters = document.querySelector('.hotels-filters');
+    filters.addEventListener('click', function(evt){
+       var clickedElement = evt.target; // хранит параметры события и в частности тот элемент на котором Cобытие произошло Изначально. этот элемент хранится в свойстве .target
+        // чтобы узнать, что кликнули именно по фильтру, нужно проверить класс этого фильтра. есть ли у кликнутого элемента класс hotel-filter
+        if (clickedElement.classList.contains('hotel-filter')) {
+           // и после того, как проверили, что это действительно тот элемент, который нужен
+           setActiveFilter(clickedElement.id);
+           }
+    });
+
+    var scrollTimeout;
     // СКРОЛЛ - отслеживание
-    window.addEventListener('scroll', function(evt){
-        // как определить, что скролл внизу страницы и пора показать следующую порцию отелей? 
-        // как определить виден ли футер страницы? 
-        // 1. определить положение футера относительно экрана (вьюпорта)
-        // для этого подойдет метод Eltment.getBoundingClientRect();
-        // возвращает параметры элемента: положение каждой из Сторон относительно экрана и размеры. этот метод есть у каждого элемента страницы
-        // возвращает объект ClientRect, который содержит: 
-        var footerCoordinates = document.querySelector('footer').getBoundingClientRect();
-        console.log(footerCoordinates)
-        // 2. определить высоту экрана
-        // window.innerHeight - возвращает высоту вьюпорта
-        var viewportSize = window.innerHeight;
-        console.log(viewportSize)
-        // 3. если смещение футера минус высота экрана меньше высоты футера, то футер виден хотя бы частично
-        // расшифровка действий внутри скобок:
-        // footerCoordinates.bottom - смещение низа футера
-        // window.innerHeight - минус размер вьюпорта
-        // <= footerCoordinates.height - должно быть меньше или равно высоте футера
-        if(footerCoordinates.bottom - window.innerHeight <= footerCoordinates.height) {
-//            renderHotels(, ++currentPage);
-        }
+    window.addEventListener('scroll', function (evt) {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function () {
+            // как определить, что скролл внизу страницы и пора показать следующую порцию отелей? 
+            // как определить виден ли футер страницы? 
+            // 1. определить положение футера относительно экрана (вьюпорта)
+            // для этого подойдет метод Eltment.getBoundingClientRect();
+            // возвращает параметры элемента: положение каждой из Сторон относительно экрана и размеры. этот метод есть у каждого элемента страницы
+            // возвращает объект ClientRect, который содержит: 
+            var footerCoordinates = document.querySelector('footer').getBoundingClientRect();
+            console.log(footerCoordinates)
+            // 2. определить высоту экрана
+            // window.innerHeight - возвращает высоту вьюпорта
+            var viewportSize = window.innerHeight;
+            console.log(viewportSize)
+            // 3. если смещение футера минус высота экрана меньше высоты футера, то футер виден хотя бы частично
+            // расшифровка действий внутри скобок:
+            // footerCoordinates.bottom - смещение низа футера
+            // window.innerHeight - минус размер вьюпорта
+            // <= footerCoordinates.height - должно быть меньше или равно высоте футера
+            if (footerCoordinates.bottom - window.innerHeight <= footerCoordinates.height) {
+                if (currentPage < Math.ceil(filteredHotels.length / PAGE_SIZE)) {
+                    // в этом случае вызываем ф. renderHotels, передав в неё список отелей и  номер текущей страницы
+                    // currentPage - это глобальная переменная объявленная выше
+                    // теперь нужно отрисовать нужные отели. этот список есть в переменной filteredHotels, которая объявленна Внутри ф. setActiveFilter (в её области видимости)
+                    // для того, чтобы сделать этот список доступным глобально нужно эту переменную объявить вверху, а внутри setActiveFilter убрать слово var для неё
+                    renderHotels(filteredHotels, ++currentPage);
+                }
+            }
+        }, 100)
     });
 
     // 1. перебрать все элементы в структуре данных.
@@ -70,8 +83,10 @@
     getHotels(); // вызов Ф. getHotels();
 
     // отрисовка списка отелей
-    function renderHotels(hotels, pageNumber) { // делаем ф. настраиваемой добавляя ей параметр pageNumber, кот буде говорить какую страницу из большого списка показывать (отрисовка по скроллу)
-        container.innerHTML = '';
+    function renderHotels(hotels, pageNumber, replace) { // делаем ф. настраиваемой добавляя ей параметр pageNumber, кот буде говорить какую страницу из большого списка показывать (отрисовка по скроллу)
+        if (replace) {
+            container.innerHTML = '';
+        }
         // создание фрагмента для оптимизации отрисовки
         var fragment = document.createDocumentFragment();
 
@@ -101,7 +116,7 @@
         document.querySelector('#' + id).classList.add('hotel-filter-selected'); // добавляем класс той кнопке по которой кликнули
 
         // отсортировать и отфильтровать отели по выбранному параметру и вывести на страницу
-        var filteredHotels = hotels.slice(0); // записываем в переменную filteredHotels Копию исходного массива
+        filteredHotels = hotels.slice(0); // записываем в переменную filteredHotels Копию исходного массива
         // switch - это оператор множественного выбора. он нужен для множественных вариантов выбора
         // if-else - как правило используется для двух вариантов выбора (или то, или другое)
         // в скобки оператора if передаём то, что мы хотим проверить. в зависимости от значения чего у нас будет разный код
@@ -135,7 +150,7 @@
                 break;
         }
 
-        renderHotels(filteredHotels, 0);
+        renderHotels(filteredHotels, 0, true);
     }
 
 
